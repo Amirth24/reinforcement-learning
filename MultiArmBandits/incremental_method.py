@@ -24,14 +24,18 @@ def run_experiement(k_distribution, steps: int, epsilon: float) -> Tuple[List[fl
     rewards = []
     values_of_actions = [0] * k
     n_of_actions = [0] * k
+    max_rewards = []
     for _ in range(steps):
         choice = choose_optimally(values_of_actions, epsilon)
         reward = pull_arm(choice, k_distribution)
         rewards.append(reward)
         n_of_actions[choice] += 1
         values_of_actions[choice] += (reward - values_of_actions[choice])* ( 1 / n_of_actions[choice])  
+        
+        max_rewards.append(max(map(lambda x: x[0] , k_distribution)))
 
-    return rewards, values_of_actions
+
+    return rewards, values_of_actions, max_rewards
 
 
 if __name__ == "__main__":
@@ -49,13 +53,14 @@ if __name__ == "__main__":
     ]
 
     for config in experiment_configs:
-        rs, vs = run_experiement(k_distribution, *config)
+        rs, vs, mxrs = run_experiement(k_distribution, *config)
 
-        cum_sum = np.cumsum(rs) / (np.arange(config[0]) + 1)
+        cum_sum = 100 * np.cumsum(rs) / np.cumsum(mxrs)
         plt.plot(cum_sum, label=f"epsilon - {config[1]}")
-    # plt.xscale('log')
+    plt.xscale('log')
     plt.title('Reward')
     plt.legend()
     plt.xlabel('Choice')
-    plt.ylabel('Reward')
+    plt.ylabel('% of Optimal Action')
+    plt.ylim([0, 100])
     plt.show()
