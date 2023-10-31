@@ -41,18 +41,19 @@ def choose_optimally(action_values: List[float], epsilon: float) -> int:
     else:
         return action_values.index(max(action_values))
 
-def update_distribution(distribution: List[Tuple[float, float]], strength: float, max_reward: float) ->  List[Tuple[float, float]]:
+def update_distribution(distribution: List[Tuple[float, float]], strength: float,proba: float) ->  List[Tuple[float, float]]:
     """Updates the reward distribution with some randomness
     Args:
         distribution: list of tuples with normal distribution parameters(mu, sigma)
         strength: strength of change in reward
-        max_reward: sets the limit of mean of x
+        proba : probablitiy to mutuate the distribution
     Returns:
         updated_distribution: distributions with updated mean and variance 
     """
-    def update_val(x):
-        if x[0] >  max_reward:
-            return (strength * random.random()) + x[0] - max_reward * strength, x[1] * random.random()
-        else:
-            return (strength * random.random() ) + x[0], x[1] * random.random()
-    return list(map(update_val, distribution))
+    if random.random() < proba:
+
+        return list(map(lambda x : (x[0] + random.randint(-100, 100) * strength, x[1] + random.randint(-50, 75) * strength), distribution))
+    
+    else:
+
+        return distribution
