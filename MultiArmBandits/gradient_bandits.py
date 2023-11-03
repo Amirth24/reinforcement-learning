@@ -8,6 +8,7 @@ another is important. No matter how high a preference there is to an action it d
 the probabilty of the action as the probablitity is determined by the softmax distribution.
 """
 from typing import *
+import random
 
 import numpy as np
 from scipy.special import softmax
@@ -28,10 +29,15 @@ def update_preferences(a: int, old_preferences: np.array, reward: float, mean_re
     #     new_preferences[i] -= alpha * (reward - mean_reward) * proba[i]
         
     # return new_preferences
+    # print(np.where(_1 == a, 1, 0), a)
 
     return old_preferences + alpha * (reward - mean_reward) * (np.where(_1 == a, 1, 0) - proba)
 
-def choose_action(preferences: np.array):
+# def choose_action(preferences: np.array):
+#     proba = softmax(preferences)
+#     return random.choices(list(range(len(preferences))), proba, k=1) [0]
+
+def choose_action(preferences: np.array) -> int:
     return np.argmax(softmax(preferences))
 
 def run_experiments(k_distribution: List[Tuple[float]], steps: int, alpha: float):
@@ -47,7 +53,8 @@ def run_experiments(k_distribution: List[Tuple[float]], steps: int, alpha: float
     """
     k = len(k_distribution)
     preferences = np.ones(k) / k
-    total_reward = [0] * k
+    # total_reward = [0] * k
+    values_of_actions = [0] * k
     rewards = []
     n_of_actions = [0]*k
     max_rewards = []
@@ -55,10 +62,12 @@ def run_experiments(k_distribution: List[Tuple[float]], steps: int, alpha: float
     for i in range(k):
         reward = pull_arm(i, k_distribution)
         rewards.append(reward)
-        total_reward[i] += reward
+        # total_reward[i] += reward
         n_of_actions[i] += 1
+        values_of_actions[i] += (reward - values_of_actions[i]) * 0.9
+        # print(preferences)
+        preferences = update_preferences(i, preferences, reward, values_of_actions[i], alpha )
 
-        preferences = update_preferences(i, preferences, reward, total_reward[i] / (i + 1), alpha )
         max_rewards.append(max(map(lambda x: x[0], k_distribution)))
         k_distribution = update_distribution(k_distribution, 0.001, 0.3)
 
@@ -66,10 +75,12 @@ def run_experiments(k_distribution: List[Tuple[float]], steps: int, alpha: float
         choice = choose_action(preferences)
         reward = pull_arm(choice, k_distribution)
         rewards.append(reward)
-        total_reward[i] += reward
-        n_of_actions[i] += 1
+        # total_reward[i] += reward
+        n_of_actions[choice] += 1
+        values_of_actions[choice] += (reward - values_of_actions[choice]) * 0.9
 
-        preferences = update_preferences(i, preferences, reward, total_reward[i] / (i + 1), alpha )
+        # print(preferences)
+        preferences = update_preferences(i, preferences, reward, values_of_actions[choice], alpha )
         max_rewards.append(max(map(lambda x: x[0], k_distribution)))
         k_distribution = update_distribution(k_distribution, 0.001, 0.3)
         
