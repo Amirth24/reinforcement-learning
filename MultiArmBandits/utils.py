@@ -11,7 +11,7 @@ def create_reward_distribution(k: int) -> List[Tuple[float, float]]:
     Returns:
         reward_distribution: list of pairs of mean and variance for normal distribution
     """
-    return [(x + random.random(), random.random()) for x in range(k)]
+    return [(random.randint(-100, 100) / 10 + random.random(), random.random()) for _ in range(k)]
 
 
 def pull_arm(k: int, distribution: List[Tuple[float, float]]) -> float: 
