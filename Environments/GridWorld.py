@@ -1,5 +1,7 @@
 """
-
+Grid world is an example of MDP in which each cell corresponds to the state of the environment
+At each cell four actions are possible: north, south, east and west which deterministically causes 
+agent to move from one cell to another in the respective direction on the grid
 """
 
 import random
@@ -11,7 +13,7 @@ from MDPEnvironment import MDPEnvironment
 
 class GridWorld(MDPEnvironment):
     """
-    
+    This class represents the grid world. The grid world of any size can be created with an initial state.
     """
     __BLACK = (0, 0, 0)
     __RED = (255, 0, 0)
@@ -111,7 +113,7 @@ class GridWorld(MDPEnvironment):
         self.__t += 1
         reward = super()._MDPEnvironment__mdp_step(self.current_pos, action)
 
-        return reward
+        return reward, self.current_pos
         
     
     def _MDPEnvironment__get_reward(self):
@@ -163,7 +165,7 @@ if __name__ == "__main__":
     gw.set_goal_position((6, 2))
     while True:
 
-        reward = gw.step(random.choice(['left', 'right', 'up', 'down']))
+        reward, current_position = gw.step(random.choice(['left', 'right', 'up', 'down']))
 
         
         #event loop
