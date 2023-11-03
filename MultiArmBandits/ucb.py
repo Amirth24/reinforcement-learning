@@ -25,7 +25,7 @@ def choose_arm_ucb(values: List[float], c: float, t: int, n_of_actions: List[int
     return np.argmax(values + c * np.sqrt(math.log(t) / n_of_actions))
 
 
-def run_experiement(k_distribution, steps: int, c: float) -> Tuple[List[float], List[float]]:
+def run_experiments(k_distribution, steps: int, c: float) -> Tuple[List[float], List[float]]:
     """Runs one full experitments with given number of steps
     Args:
         k_distribution: probability distribution for each action
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     ]
 
     for config in experiment_configs:
-        rs, vs, mxrs = run_experiement(k_distribution, *config)
+        rs, vs, mxrs = run_experiments(k_distribution, *config)
 
         cum_sum = 100 * np.cumsum(rs) / np.cumsum(mxrs)
         plt.plot(cum_sum, label=f"c - {config[1]}")

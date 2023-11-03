@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from utils import pull_arm, choose_optimally, create_reward_distribution
 
 
-def run_experiement(
+def run_experiments(
     k_distribution, steps: int, epsilon: float
 ) -> Tuple[List[float], List[float]]:
     """Runs one full experitments with given number of steps
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     ]
 
     for config in experiment_configs:
-        rs, vs, mxrs = run_experiement(k_distribution, *config)
+        rs, vs, mxrs = run_experiments(k_distribution, *config)
 
         cum_sum = 100 * np.cumsum(rs) / np.cumsum(mxrs)
         plt.plot(cum_sum, label=f"epsilon - {config[1]}")
