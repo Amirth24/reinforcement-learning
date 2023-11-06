@@ -9,7 +9,7 @@ import pygame
 import gymnasium as gym
 import numpy as np
 
-from utils import compute_state_value, extract_policy
+from core import compute_state_value, extract_policy
 
 # Creating the environment
 # Changing is_slippery false make the actions deterministic
