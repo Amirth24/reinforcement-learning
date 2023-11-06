@@ -68,11 +68,25 @@ def extract_policy(env: gymnasium.Env, value_table: np.array, gamma:float = 0.5)
     return policy
 
 
-                q_values[state, action] = np.sum(action_values)
-        
-        if np.sum(np.fabs(updated_q_values - q_values)) < threshold:
-            print('Value converged at', i+1)
+def policy_iteration(__env: gymnasium.Env, gamma: float = 0.5, max_iter: int = 20000) -> np.array:
+    """ Finds the optimal policy for the given environement
+    Args:
+        env (Env): The  Gymnasium Environment.
+        gamma (float): The discount factor (default=0.5)
+        max_iter (int) : The maximum no of iteration.
+    Returns
+        np.array : The optimal policy
+    """
+    __policy = np.zeros(__env.observation_space.n)
+    for j in range(max_iter):
+        value = compute_state_value(__env, __policy, gamma)
 
+        new_policy = extract_policy(__env, value, gamma)
+
+        if np.all(__policy == new_policy):
+            print("Policy is stablized at", j + 1)
             break
-        
-    return q_values
+
+        __policy  = new_policy.astype(int)
+
+    return __policy
