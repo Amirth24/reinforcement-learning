@@ -5,19 +5,14 @@
     If it is not a good policy find a better one. Repeat the process
     until the old policy is same as the new one.
 """
-import pygame
 import gymnasium as gym
 import numpy as np
 
-from core import compute_state_value, extract_policy
+from core import compute_value_function, extract_policy
 
 # Creating the environment
 # Changing is_slippery false make the actions deterministic
-env = gym.make(
-    "FrozenLake-v1", 
-    is_slippery=False, 
-    render_mode='human'
-)
+env = gym.make("FrozenLake-v1", is_slippery=False, render_mode="human")
 env.reset()
 
 # Creating a random policy
@@ -27,7 +22,7 @@ print(policy)
 observation = 0
 gamma = 0.8
 for i in range(20000):
-    value = compute_state_value(env, policy, gamma)
+    value = compute_value_function(env, policy, gamma)
 
     new_policy = extract_policy(env, value, gamma)
 
@@ -35,23 +30,16 @@ for i in range(20000):
         print("Policy is stablized at", i + 1)
         break
 
-    policy  = new_policy.astype(int)
+    policy = new_policy.astype(int)
 
 print("Optimal Policy", policy)
 
 for i in range(1000):
-    observation, reward, term, trunc, _ = env.step(
-        policy[observation]
-    )
+    observation, reward, term, trunc, _ = env.step(policy[observation])
 
     if trunc or term:
-        print("State Restarted")
-        env.reset()
+        break
 
     env.render()
-
-    for ev in pygame.event.get():
-        if ev.type == pygame.QUIT:
-            pygame.quit()
 
 env.close()
