@@ -87,6 +87,7 @@ def compute_value_function(
 def extract_policy(
     env: gymnasium.Env, value_table: np.array, gamma: float = 0.5
 ) -> np.array:
+
     """Extract a better policy for the given value table
     Args:
         env (Env): The Gymnasium Environment
@@ -134,5 +135,4 @@ def optimal_policy_with_pi(
             break
 
         policy = new_policy.astype(int)
-
-    return policy
+  

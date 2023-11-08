@@ -13,6 +13,7 @@ from core import compute_value_function, extract_policy
 # Creating the environment
 # Changing is_slippery false make the actions deterministic
 env = gym.make("FrozenLake-v1", is_slippery=False, render_mode="human")
+
 env.reset()
 
 # Creating a random policy
@@ -22,9 +23,6 @@ print(policy)
 observation = 0
 gamma = 0.8
 for i in range(20000):
-    value = compute_value_function(env, policy, gamma)
-
-    new_policy = extract_policy(env, value, gamma)
 
     if np.all(policy == new_policy):
         print("Policy is stablized at", i + 1)
@@ -41,5 +39,6 @@ for i in range(1000):
         break
 
     env.render()
+
 
 env.close()
